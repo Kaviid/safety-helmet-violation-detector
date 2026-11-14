@@ -60,7 +60,6 @@ helmet-detection/
 │   ├── videos/        ← CCTV videos
 │   ├── frames/        ← frames extracted from videos
 │   └── processed/     ← cleaned train/val/test data
-├── notebooks/         ← EDA and experiments
 ├── src/               ← Python scripts
 ├── models/            ← trained model weights (ignored by Git)
 ├── outputs/           ← plots, predictions, demo results
