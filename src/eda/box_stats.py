@@ -2,7 +2,7 @@ import numpy as np
 from pathlib import Path
 import xml.etree.ElementTree as ET
 
-print("Broken boxes checking...\n")
+print("Broken boxes checking...")
 
 problems = []
 for f in Path("data/raw/kaggle_hardhat").rglob("*.xml"): 
@@ -40,5 +40,37 @@ for f in Path("data/raw/kaggle_hardhat").rglob("*.xml"):
                 continue
 
 print(f"{len(problems)}\n")
-for i in problems:
-    print(i)
+#for i in problems: #Use test file in my pc > document
+#    print(i)
+
+print("Box sizes analyzing...")
+
+area_list = []
+for f in Path("data/raw/kaggle_hardhat").rglob("*.xml"):
+    tree = ET.parse(f)
+    root = tree.getroot()
+    objects = root.findall("object")
+    for obj in objects :
+        if obj.find("name").text != "person":
+            bnd = obj.find("bndbox")
+            xmin = int(bnd.find("xmin").text)
+            xmax = int(bnd.find("xmax").text)
+            ymin = int(bnd.find("ymin").text)
+            ymax = int(bnd.find("ymax").text)       
+
+            box_w = xmax - xmin
+            box_h = ymax - ymin
+            area = box_w * box_h
+            area_list.append((f.name , area))
+
+print(f"{len(area_list)}") #Must equal to 24,751
+
+#for i in area_list[:10]: #For sample show of list
+#    print(f"{i[0]} : {i[1]}")
+
+print(f"Min : {min(area_list, key=lambda p: p[1])}")
+print(f"Max : {max(area_list, key=lambda p: p[1])}")
+total = 0
+for i in area_list:
+    total += i[1]
+print(f"Avg : {total/len(area_list)}")
