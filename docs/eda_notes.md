@@ -42,3 +42,12 @@ Run : `python src/eda/images_size_analyze.py`
 - Every image has at least one helmet or head box, so there are no empty images to remove.
 - Most images have about 5 heads.
 - Some images are very crowded (up to 68 heads). Small, packed heads are harder for the model to detect.
+
+### Boxes per image histogram
+
+![Boxes per image](../outputs/eda/boxes_per_image.png)
+
+- About 61% of images have only 1 to 4 heads.
+- Very few images have more than 14 heads.
+- The data is right-skewed: most images have few heads, and a small number are very crowded.
+- The model may find crowded scenes harder because it sees fewer of them.
