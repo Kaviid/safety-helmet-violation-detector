@@ -37,3 +37,9 @@ print("\nBoxes per image analyzing...\n")
 print(f"Min : {min(boxes_per_img)}")
 print(f"Max : {max(boxes_per_img)}")
 print(f"Avg : {sum(boxes_per_img)/len(boxes_per_img)}")
+
+plt.hist(boxes_per_img, bins=20)# bars show how often each value appears...
+plt.xlabel("Boxes per image")
+plt.ylabel("Number of images")
+plt.title("My title")
+plt.savefig("outputs/eda/boxes_per_image.png")
