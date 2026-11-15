@@ -5,7 +5,7 @@ import os
 # Counting IITU Safety Helmet Dataset
 print("'IITU_Safety-Helmet_Dataset' Dataset --------------------------------\n")
 
-classes = [0,0,0,0,0,0]
+classes = {}
 total_labels = 0
 blank_label_file = 0
 total_boxes = 0
@@ -20,13 +20,16 @@ for f in Path("data/raw/IITU_Safety-Helmet_Dataset").rglob("*.txt"):
         continue
 
     total_labels += 1
+    text = f.read_text()
 
-    with open(f) as file:
-        text = file.read()
-        s = text.splitlines()
-        for line in s:
-            total_boxes += 1
-            id = int(line.split()[0])
+    for line in text.splitlines():
+        if not line.strip():
+            continue
+        total_boxes += 1
+        id = int(line.split()[0])
+        if id not in classes:
+            classes[id] = 1
+        else :
             classes[id] += 1
 
 print(f"Total images : {total_imgs}")
@@ -34,10 +37,8 @@ print(f"Label files  : {total_labels}")
 print(f"Empty files : {blank_label_file}")     
 print(f"Total boxes : {total_boxes}")
 
-k = 0
-while k < len(classes) and classes[k] != 0:
-    print(f"{k} : {classes[k]}")
-    k += 1
+for class_id, count in sorted(classes.items()):
+    print(f"{class_id} : {count}")
 
 # Counting Kaggle Dataset
 
@@ -51,16 +52,17 @@ for f in Path("data/raw/kaggle_hardhat").rglob("*.png"):
     k_total_imgs += 1
 
 for f in Path("data/raw/kaggle_hardhat").rglob("*.xml"):
-    if os.path.getsize(f) == 0:
+    tree = ET.parse(f)
+    root = tree.getroot()
+    objects = root.findall("object")
+
+    if not objects:
         k_blank_label_file += 1
         continue
 
     k_total_labels += 1
 
-    tree = ET.parse(f)
-    root = tree.getroot()
-
-    for obj in root.findall("object"):
+    for obj in objects:
         k_total_boxes += 1
         class_name = obj.find("name").text
         if class_name not in k_classes:
