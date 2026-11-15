@@ -1,4 +1,5 @@
 venv/
 data/
 runs/
+outputs/
 *.pt
