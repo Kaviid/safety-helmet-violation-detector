@@ -1,15 +1,16 @@
 from pathlib import Path
-import cv2
 import xml.etree.ElementTree as ET
 import matplotlib.pyplot as plt
 
 
-print("Kaggle hardhat dataset size analyzing...")
+print("Kaggle hardhat dataset size analyzing...\n")
 
 sizes = {}
+boxes_per_img = []
 
 for f in Path("data/raw/kaggle_hardhat").rglob("*.xml"):
-    size = ET.parse(f).getroot().find("size")
+    root = ET.parse(f).getroot()
+    size = root.find("size")
     width = int(size.find("width").text)
     height = int(size.find("height").text)
     #print(width * height)
@@ -20,5 +21,10 @@ for f in Path("data/raw/kaggle_hardhat").rglob("*.xml"):
     else : 
         sizes[key] = 1
 
+    objects = root.findall("object")
+    boxes_per_img.append(len(objects))
+
 for key, value in sizes.items():
     print(f"{key} : {value}")
+
+#print(boxes_per_img)
