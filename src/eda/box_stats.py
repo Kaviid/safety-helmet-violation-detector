@@ -1,6 +1,7 @@
 import numpy as np
 from pathlib import Path
 import xml.etree.ElementTree as ET
+import cv2
 
 print("Broken boxes checking...")
 
@@ -114,4 +115,54 @@ outliers.sort(key=lambda p: p[1]) #Sort again smallest one come to first
 print(f"Top 5 smallest : {outliers[:5]}")
 
 #I got 5 biggest and 5 smallest area so we must find are those what? 
-#So let's use again draw_boxes.py to visualize these...
+#So let's again visualize these...
+
+Path("outputs/eda/kaggle_outlier").mkdir(parents=True, exist_ok=True)
+
+kaggle_files = []
+
+for f in Path("data/raw/kaggle_hardhat").rglob("*.xml"):
+    kaggle_files.append(f)
+
+#Got file names from top 5 biggest and smallest area...
+ten_files = ["data/raw/kaggle_hardhat/annotations/hard_hat_workers2944.xml", "data/raw/kaggle_hardhat/annotations/hard_hat_workers2437.xml", 
+             "data/raw/kaggle_hardhat/annotations/hard_hat_workers4302.xml" , "data/raw/kaggle_hardhat/annotations/hard_hat_workers554.xml", 
+             "data/raw/kaggle_hardhat/annotations/hard_hat_workers2900.xml", "data/raw/kaggle_hardhat/annotations/hard_hat_workers3255.xml", 
+             "data/raw/kaggle_hardhat/annotations/hard_hat_workers4396.xml", "data/raw/kaggle_hardhat/annotations/hard_hat_workers2280.xml", 
+             "data/raw/kaggle_hardhat/annotations/hard_hat_workers1501.xml", "data/raw/kaggle_hardhat/annotations/hard_hat_workers308.xml"]
+
+colours = {
+    "helmet": (0, 255, 0),      # green
+    "head":   (0, 0, 255),      # red
+}
+
+for xml_path in ten_files:
+    root = ET.parse(xml_path).getroot()
+
+    # the XML tells us the image name
+    img_name = root.find("filename").text
+    img_path = Path("data/raw/kaggle_hardhat/images") / img_name
+
+    img = cv2.imread(str(img_path))
+    if img is None:
+        print("Image not found:", img_path)
+        continue
+
+    for obj in root.findall("object"):
+        name = obj.find("name").text
+        box = obj.find("bndbox")
+
+        # XML already has pixel corners, no conversion needed
+        x1 = int(box.find("xmin").text)
+        y1 = int(box.find("ymin").text)
+        x2 = int(box.find("xmax").text)
+        y2 = int(box.find("ymax").text)
+
+        colour = colours[name]
+        cv2.rectangle(img, (x1, y1), (x2, y2), colour, 1)
+        cv2.putText(img, name, (x1, y1 - 3),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.35, colour, 1)
+
+    cv2.imwrite(str(Path("outputs/eda/kaggle_outlier") / img_name), img)
+
+print("Kaggle done")
