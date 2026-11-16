@@ -46,6 +46,8 @@ for f in Path("data/raw/kaggle_hardhat").rglob("*.xml"):
 
 print("Box sizes analyzing...")
 
+tiny_boxes_5 = [] # For count tiny boxes size and store that file
+tiny_boxes_8 = []
 area_list = []
 for f in Path("data/raw/kaggle_hardhat").rglob("*.xml"):
     tree = ET.parse(f)
@@ -63,6 +65,12 @@ for f in Path("data/raw/kaggle_hardhat").rglob("*.xml"):
             box_h = ymax - ymin
             area = box_w * box_h
             area_list.append((f.name , area))
+
+            if box_w < 5 or box_h < 5:
+                tiny_boxes_5.append(f.name)
+            if box_w < 8 or box_h < 8:
+                tiny_boxes_8.append(f.name)          
+
 
 #print(f"{len(area_list)}") #Must equal to 24,751
 
@@ -113,6 +121,9 @@ print(f"Top 5 biggest : {outliers[:5]}")
 
 outliers.sort(key=lambda p: p[1]) #Sort again smallest one come to first
 print(f"Top 5 smallest : {outliers[:5]}")
+
+print(f"\nTiny boxes < 5 : {len(tiny_boxes_5)}")
+print(f"Tiny boxes < 8 : {len(tiny_boxes_8)}")
 
 #I got 5 biggest and 5 smallest area so we must find are those what? 
 #So let's again visualize these...
@@ -165,4 +176,4 @@ for xml_path in ten_files:
 
     cv2.imwrite(str(Path("outputs/eda/kaggle_outlier") / img_name), img)
 
-print("Kaggle done")
+print("Kaggle outlier box draw done")
