@@ -20,3 +20,5 @@ names:
 
 (config_dir / "kaggle_v1.yaml").write_text(text)
 print(f"Created: {config_dir / 'kaggle_v1.yaml'}")
+
+# YOLO finds the labels by itself. We only tell that where the images are.
