@@ -1,12 +1,14 @@
 from pathlib import Path
 import xml.etree.ElementTree as ET
 import shutil
+import os
 
 print("YOLO converting start - Dataset Preprocessing...")
 
 person_count = 0
 tiny_box_skip = 0
 CLASS_MAP = {"helmet": 0, "head": 1}
+preprocessed_file_count = 0
 
 base = Path("data/processed/kaggle") #Base folder
 for sub in ["images", "labels"]: #Sub folders
@@ -62,5 +64,9 @@ for f in Path("data/raw/kaggle_hardhat/annotations").rglob("*.xml"):
     src = Path("data/raw/kaggle_hardhat/images"/img_file)
     dst = Path("data/processed/kaggle/images")
     shutil.copy2(src, dst) # copies into that folder keeps the same name
-    print(f"Updated - {f.stem} + .png | {f.stem} + .txt")
+    preprocessed_file_count += 1
+    print(f"Updated [{preprocessed_file_count}] - {f.stem}.png | {f.stem}.txt")
 
+print(f"\n{preprocessed_file_count} files preprocessed!")
+print(f"Person label skipped : {person_count}")
+print(f"Tiny boxes < 5px skipped : {tiny_box_skip}")
