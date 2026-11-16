@@ -1,3 +1,12 @@
+## Convert XML to YOLO
+Run : `python src/preprocessing/convert_kaggle.py`
+
+- Converted all 5,000 Kaggle XML files to YOLO .txt format.
+- Class mapping: helmet → 0, head → 1 (no_helmet).
+- Skipped 751 person boxes and 39 tiny boxes (width or height under 5 px).
+- Result: 24,712 boxes (18,931 helmet, 5,781 no_helmet).
+- Output: `data/processed/kaggle/` (images + labels). `data/raw/` is not changed.
+
 ## Train / Val / Test Split
 Run : `python src/preprocessing/split_dataset.py`
 
@@ -11,6 +20,13 @@ Run : `python src/preprocessing/split_dataset.py`
 
 - All splits have a similar helmet : no_helmet ratio, so the split is balanced.
 
+## Dataset Config (data.yaml)
+Run : `python src/preprocessing/make_data_yaml.py`
+
+- Creates `configs/kaggle_v1.yaml`, which tells YOLO where the train, val and test images are and what each class ID means.
+- The script finds the dataset path on the current computer, so it works after cloning to any folder.
+- YOLO finds the labels by itself by swapping `images` for `labels` in each image path.
+  
 ## Verify YOLO Labels
 Run : `python src/preprocessing/verify_labels.py`
 
