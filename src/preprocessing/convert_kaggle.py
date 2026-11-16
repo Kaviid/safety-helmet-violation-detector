@@ -1,5 +1,6 @@
 from pathlib import Path
 import xml.etree.ElementTree as ET
+import shutil
 
 person_count = 0
 tiny_box_skip = 0
@@ -8,6 +9,9 @@ CLASS_MAP = {"helmet": 0, "head": 1}
 base = Path("data/processed/kaggle") #Base folder
 for sub in ["images", "labels"]: #Sub folders
     (base / sub).mkdir(parents=True, exist_ok=True)
+
+txt_file_path = Path("data/processed/kaggle/labels")
+img_file_path = Path("data/processed/kaggle/images")
 
 for f in Path("data/raw/kaggle_hardhat/annotations").rglob("*.xml"):
     root = ET.parse(f).getroot()
@@ -47,3 +51,12 @@ for f in Path("data/raw/kaggle_hardhat/annotations").rglob("*.xml"):
             #Convert to YOLO .txt
             #class_id  x_center  y_center  width  height
             lines.append(f"{class_id} {x_center:.6f} {y_center:.6f} {w:.6f} {h:.6f}")
+
+        file_name = f.stem + ".txt"
+        with Path(txt_file_path/file_name).open("w") as l:
+            for box in lines:
+                l.write(box + "\n")
+        src = Path(img_file_path/f.stem + ".png")
+        dst = Path("data/processed/kaggle/images")
+        shutil.copy2(src, dst) # copies into that folder keeps the same name
+
