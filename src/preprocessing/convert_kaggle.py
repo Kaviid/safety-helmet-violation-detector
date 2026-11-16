@@ -3,6 +3,7 @@ import xml.etree.ElementTree as ET
 
 person_count = 0
 tiny_box_skip = 0
+CLASS_MAP = {"helmet": 0, "head": 1}
 
 for f in Path("data/raw/kaggle_hardhat/annotations").rglob("*.xml"):
     root = ET.parse(f).getroot()
@@ -12,14 +13,14 @@ for f in Path("data/raw/kaggle_hardhat/annotations").rglob("*.xml"):
     objects = root.findall("object")
 
     for obj in objects:
-        if obj.find("person").text == "person":
+        if obj.find("name").text == "person":
             person_count += 1
         else :
             bnd = obj.find("bndbox")
-            xmin = int(bnd.find("xmin"))
-            ymin = int(bnd.find("ymin"))
-            xmax = int(bnd.find("xmax"))
-            ymax = int(bnd.find("ymax"))
+            xmin = int(bnd.find("xmin").text)
+            ymin = int(bnd.find("ymin").text)
+            xmax = int(bnd.find("xmax").text)
+            ymax = int(bnd.find("ymax").text)
 
             box_w = xmax - xmin
             box_h = ymax - ymin
@@ -32,9 +33,11 @@ for f in Path("data/raw/kaggle_hardhat/annotations").rglob("*.xml"):
             w        = box_w / width
             h        = box_h / height
 
-            class_id = 0
-            if obj.find("name").text == "head":
-                class_id = 1
+            try :
+                class_id = CLASS_MAP[obj.find("name").text]
+            except KeyError :
+                print(f"Unknown label found! : {f.name}")
+                continue
 
             #Convert to YOLO .txt
             #class_id  x_center  y_center  width  height
