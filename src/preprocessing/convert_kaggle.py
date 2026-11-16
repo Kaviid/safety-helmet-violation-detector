@@ -5,6 +5,10 @@ person_count = 0
 tiny_box_skip = 0
 CLASS_MAP = {"helmet": 0, "head": 1}
 
+base = Path("data/processed/kaggle") #Base folder
+for sub in ["images", "labels"]: #Sub folders
+    (base / sub).mkdir(parents=True, exist_ok=True)
+
 for f in Path("data/raw/kaggle_hardhat/annotations").rglob("*.xml"):
     root = ET.parse(f).getroot()
     size = root.find("size")
