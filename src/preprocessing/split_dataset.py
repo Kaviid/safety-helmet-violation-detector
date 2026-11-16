@@ -31,5 +31,5 @@ for split_name, split_file in splits.items():
         shutil.copy2(l,dst_lab)
         split_record[split_name] += 1
 
-for key,val in split_record.items():
-    print(f"{key} : {val}")
+for key,count in split_record.items():
+    print(f"{key} : {count}")
