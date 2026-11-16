@@ -51,3 +51,48 @@ Run : `python src/eda/images_size_analyze.py`
 - Very few images have more than 14 heads.
 - The data is right-skewed: most images have few heads, and a small number are very crowded.
 - The model may find crowded scenes harder because it sees fewer of them.
+
+## Kaggle: Box Sizes and Outliers
+Run : `python src/eda/box_stats.py`
+
+### Broken boxes
+
+- I checked every helmet and head box for impossible corners (zero size, backwards, or outside the image).
+- Broken boxes found: 0
+
+### Box sizes (area in pixels)
+
+| Item | Value |
+|---|---|
+| Q1 | 420 (about 20×20 px) |
+| Q3 | 2,080 (about 45×45 px) |
+| IQR | 1,660 |
+| Lower fence | -2,070 |
+| Upper fence | 4,570 (about 68×68 px) |
+
+- The middle 50% of heads are about 20 to 45 px wide.
+- The lower fence is negative, so IQR finds no small outliers. This happens because the data is right-skewed.
+
+### Big outliers
+
+- I drew the 5 biggest boxes. They are real close-up portraits of workers.
+- Decision: keep them.
+
+### Tiny boxes
+
+- I drew the 5 smallest boxes. Some images have mirrored edges, and the boxes were copied into those areas. This creates tiny slivers of upside-down heads and helmets.
+- IQR did not catch these tiny boxes.
+
+| Rule | Boxes | % |
+|---|---|---|
+| Width or height < 5 px | 39 | 0.16% |
+| Width or height < 8 px | 285 | 1.15% |
+
+- Decision: remove boxes with width or height under 5 px during preprocessing.
+- I keep boxes from 5 to 8 px because some may be real far-away heads.
+
+### Lesson learned
+
+- I first deleted whole images and XML files from `data/raw/`. This removed about 365 good boxes along with the 39 tiny ones.
+- I restored the dataset from the original download.
+- Rule: never change `data/raw/`. Remove bad boxes in preprocessing, one box at a time.
