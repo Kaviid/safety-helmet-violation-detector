@@ -2,6 +2,8 @@ from pathlib import Path
 import xml.etree.ElementTree as ET
 import shutil
 
+print("YOLO converting start - Dataset Preprocessing...")
+
 person_count = 0
 tiny_box_skip = 0
 CLASS_MAP = {"helmet": 0, "head": 1}
@@ -52,11 +54,13 @@ for f in Path("data/raw/kaggle_hardhat/annotations").rglob("*.xml"):
             #class_id  x_center  y_center  width  height
             lines.append(f"{class_id} {x_center:.6f} {y_center:.6f} {w:.6f} {h:.6f}")
 
-        file_name = f.stem + ".txt"
-        with Path(txt_file_path/file_name).open("w") as l:
-            for box in lines:
-                l.write(box + "\n")
-        src = Path(img_file_path/f.stem + ".png")
-        dst = Path("data/processed/kaggle/images")
-        shutil.copy2(src, dst) # copies into that folder keeps the same name
+    file_name = f.stem + ".txt"
+    with Path(txt_file_path/file_name).open("w") as l:
+        for box in lines:
+            l.write(box + "\n")
+    img_file = Path(f.stem + ".png")
+    src = Path("data/raw/kaggle_hardhat/images"/img_file)
+    dst = Path("data/processed/kaggle/images")
+    shutil.copy2(src, dst) # copies into that folder keeps the same name
+    print(f"Updated - {f.stem} + .png | {f.stem} + .txt")
 
