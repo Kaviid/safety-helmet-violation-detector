@@ -22,14 +22,27 @@ test  = images[val_end:]            # 4500 → end
 
 splits = {"train": train, "val": val, "test": test}
 split_record = {"train": 0, "val": 0, "test": 0}
+box_counts = {"train": {0: 0, 1: 0}, "val": {0: 0, 1: 0}, "test": {0: 0, 1: 0}}
+
 for split_name, split_file in splits.items():
     dst_img = Path(f"data/processed/kaggle_split/images/{split_name}")
     dst_lab = Path(f"data/processed/kaggle_split/labels/{split_name}")
     for i in split_file:
         shutil.copy2(i, dst_img) # copies into that folder 
         l = Path(f"data/processed/kaggle/labels/{i.stem}.txt")
+
+        text = l.read_text() #Count each split files classes
+        for line in text.splitlines():
+            id = int(line.split()[0])
+            box_counts[split_name][id] += 1
+
         shutil.copy2(l,dst_lab)
         split_record[split_name] += 1
 
 for key,count in split_record.items():
     print(f"{key} : {count}")
+
+print("\nCheck split dataset classes balance...")
+for key,count in box_counts.items():
+    for cls,id_count in count.items():
+        print(f"{key} : {cls} - {id_count}")
