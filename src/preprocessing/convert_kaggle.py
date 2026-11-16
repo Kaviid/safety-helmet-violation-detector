@@ -11,6 +11,7 @@ for f in Path("data/raw/kaggle_hardhat/annotations").rglob("*.xml"):
     width = int(size.find("width").text)
     height = int(size.find("height").text)
     objects = root.findall("object")
+    lines = []
 
     for obj in objects:
         if obj.find("name").text == "person":
@@ -41,3 +42,4 @@ for f in Path("data/raw/kaggle_hardhat/annotations").rglob("*.xml"):
 
             #Convert to YOLO .txt
             #class_id  x_center  y_center  width  height
+            lines.append(f"{class_id} {x_center:.6f} {y_center:.6f} {w:.6f} {h:.6f}")
