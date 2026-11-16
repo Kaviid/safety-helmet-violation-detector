@@ -3,3 +3,4 @@ data/
 runs/
 outputs/
 *.pt
+configs/*.yaml
