@@ -28,14 +28,7 @@ def main():
     model = YOLO(model_needed) # Load the pretrained model for this experiment from EXPERIMENTS dict
 
     # Call the model’s train method and give it your settings as keyword arguments
-    results = model.train(data="configs/kaggle_v1.yaml", 
-                        epochs=50, 
-                        imgsz=640,
-                        batch = 16,
-                        device = 0,
-                        seed = 42,
-                        project="runs",
-                        name = "baseline_yolo26n")
+    results = model.train(**setting)
     print("Training finished!")
 
 if __name__ == "__main__":
