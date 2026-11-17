@@ -12,9 +12,19 @@ def main():
                                     "imgsz" : 640, "batch" : 16, "workers" : 4, "device" : 0, "seed" : 42, 
                                     "project" : f"{Path.cwd()}/runs", "name" : "yolo26s_640"}}
 
-    experiment_model = sys.argv[0] #Get model as CLI parameter
-    
-    model = YOLO("yolo26s.pt") # Load YOLO26n pretrained model
+    try :
+        experiment_model = sys.argv[1] #Get model as CLI parameter
+    except KeyError :
+        print("Wrong experiment name!")
+        sys.exit(0)
+    except IndexError:
+        print("Enter which experiment!")
+        sys.exit(0)
+        
+    exp = EXPERIMENTS[experiment_model]
+    model_needed = exp.pop("model")
+
+    model = YOLO(model_needed) # Load YOLO26n pretrained model
 
     # Call the model’s train method and give it your settings as keyword arguments
     results = model.train(data="configs/kaggle_v1.yaml", 
