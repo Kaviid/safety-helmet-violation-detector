@@ -38,3 +38,19 @@ For each batch of images:
 - 3,500 train images ÷ batch 16 ≈ 219 weight updates per epoch.
 - 219 × 50 epochs ≈ 11,000 updates in total.
 - Learning rate and augmentation stay at YOLO's defaults for the baseline. I will tune them later.
+
+## Baseline results (YOLO26n, 50 epochs, 640)
+Run folder: `runs/detect/runs/baseline_yolo26n`
+
+| Class | Precision | Recall | mAP50 | mAP50-95 |
+|---|---|---|---|---|
+| all | 0.923 | 0.922 | 0.953 | 0.632 |
+| helmet | 0.941 | 0.928 | 0.965 | 0.639 |
+| no_helmet | 0.905 | 0.917 | 0.941 | 0.625 |
+
+- Training time: about 40 minutes on RTX 4050 6GB.
+- Train and val losses both go down until the last epoch, so the model is not overfitting.
+- mAP50 stops improving after about epoch 30. mAP50-95 is still rising slightly, so more epochs may help a little.
+- Confusion matrix: 98% of helmets and 97% of no_helmet heads are found correctly.
+- Most dangerous error: 2% of no_helmet heads are predicted as helmet.
+- Some false alarms on the background. Possible causes: unlabelled heads or mirrored image edges. Let's check in evaluation.
