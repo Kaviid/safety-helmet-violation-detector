@@ -14,17 +14,18 @@ def main():
 
     try :
         experiment_model = sys.argv[1] #Get model as CLI parameter
-    except KeyError :
-        print("Wrong experiment name!")
-        sys.exit(0)
-    except IndexError:
-        print("Enter which experiment!")
-        sys.exit(0)
-        
-    exp = EXPERIMENTS[experiment_model]
-    model_needed = exp.pop("model")
+        exp = EXPERIMENTS[experiment_model]
+        setting = exp.copy()
+    except KeyError as e:
+        print(e)
+        sys.exit(1)
+    except IndexError as e:
+        print(e)
+        sys.exit(1)
 
-    model = YOLO(model_needed) # Load YOLO26n pretrained model
+    model_needed = setting.pop("model")
+
+    model = YOLO(model_needed) # Load the pretrained model for this experiment from EXPERIMENTS dict
 
     # Call the model’s train method and give it your settings as keyword arguments
     results = model.train(data="configs/kaggle_v1.yaml", 
