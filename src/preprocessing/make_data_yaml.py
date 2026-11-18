@@ -1,7 +1,7 @@
 from pathlib import Path
 
 # full path to the split dataset, on whatever computer runs this
-dataset_path = (Path.cwd() / "data/processed/kaggle_split").as_posix()
+dataset_path = (Path.cwd() / "data/processed/kaggle_split").as_posix() # -> .as_posix() turns a Path into a text string with forward slashes / like this
 
 # create 'configs' folder
 config_dir = Path.cwd() / "configs"
