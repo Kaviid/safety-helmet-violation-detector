@@ -14,7 +14,7 @@ def main():
                   split="test",               # use the 500 test images, not val
                   imgsz=640,
                   batch=16,
-                  conf=0.25,
+                  conf=0.20,
                   device=0,
                   project=str(Path.cwd() / "runs"),
                   name=f"test_{model_name}")  # ex - runs/test_yolo26n
