@@ -5,6 +5,7 @@ MODELS = {"yolo26n": "runs/baseline_yolo26n/weights/best.pt",
           "yolo26s": "runs/yolo26s_640/weights/best.pt"}
 
 
+
 def main():
     for model_name, weights in MODELS.items():
         print(f"\nTesting {model_name} ...")
@@ -17,7 +18,7 @@ def main():
                   conf=0.20,
                   device=0,
                   project=str(Path.cwd() / "runs"),
-                  name=f"test_{model_name}")  # ex - runs/test_yolo26n
+                  name=f"test_{model_name}_2")  # ex - runs/test_yolo26n
 
     print("\nTesting finished!")
     
